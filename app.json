@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "boltaaa",
+    "slug": "boltaaa",
+    "version": "1.0.0",
+    "ios": {
+      "bundleIdentifier": "com.narsoo.boltaa"
+    },
+    "android": {
+      "package": "com.narsoo.boltaa"
+    }
+  }
+}
