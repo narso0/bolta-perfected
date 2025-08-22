@@ -13,11 +13,7 @@ interface GradientTextProps extends TextProps {
 const GradientText = ({ colors, ...rest }: GradientTextProps) => {
   return (
     <MaskedView maskElement={<Text {...rest} />}>
-      <LinearGradient
-        colors={colors}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-      >
+      <LinearGradient colors={colors} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
         {/* The Text component below is used to give the gradient the correct size */}
         <Text {...rest} style={[rest.style, { opacity: 0 }]} />
       </LinearGradient>

@@ -17,8 +17,7 @@ export const CircularProgress = ({
 }: CircularProgressProps) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
-  const strokeDashoffset =
-    circumference - (progressPercent / 100) * circumference;
+  const strokeDashoffset = circumference - (progressPercent / 100) * circumference;
 
   return (
     <View style={{ width: size, height: size }}>

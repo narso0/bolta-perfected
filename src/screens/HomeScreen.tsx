@@ -38,7 +38,7 @@ const generateWeekData = (todaySteps: number) => {
       return { day, steps: 0 };
     }
     // For past days, we'll use consistent mock data. In a real app, this would come from a database.
-    const pastSteps = [11200, 10500, 15600, 8450, 2300, 4500]; 
+    const pastSteps = [11200, 10500, 15600, 8450, 2300, 4500];
     return { day, steps: pastSteps[index] || 0 };
   });
 };
@@ -48,18 +48,17 @@ export default function HomeScreen({ navigation }: any) {
   const { stepCount } = useStepCounter();
   const coins = Math.floor(stepCount / 1000);
   const progressPercent = Math.min((stepCount / dailyGoal) * 100, 100);
-  
+
   const weekData = generateWeekData(stepCount);
   const streak = calculateStreak(weekData);
 
   return (
     <View style={{ flex: 1 }}>
-      <LinearGradient
-        colors={['#394242', '#26394C']}
-        style={StyleSheet.absoluteFill}
-      />
+      <LinearGradient colors={['#394242', '#26394C']} style={StyleSheet.absoluteFill} />
       <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 128, paddingBottom: 32 }}>
+        <ScrollView
+          contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 128, paddingBottom: 32 }}
+        >
           <View className="mb-6">
             <Text className="text-3xl font-bold text-white">გამარჯობა, {user?.name}! 👋</Text>
             <Text className="text-gray-400">განაგრძე სიარული შენი მიზნებისკენ</Text>

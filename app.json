@@ -13,13 +13,11 @@
       "googleServicesFile": "./google-services.json"
     },
     "splash": {
-      "image": "./assets/images/bolta-circle.png", 
-      "resizeMode": "contain", 
-      "backgroundColor": "#515773" 
+      "image": "./assets/images/bolta-circle.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#515773"
     },
-    "plugins": [
-      "@react-native-google-signin/google-signin"
-    ],
+    "plugins": ["@react-native-google-signin/google-signin"],
     "extra": {
       "eas": {
         "projectId": "6885d58b-7929-4f67-a236-62d42ebb1fca"

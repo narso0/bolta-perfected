@@ -11,10 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 const LoadingScreen = () => (
   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <LinearGradient
-        colors={['#394242', '#26394C']}
-        style={StyleSheet.absoluteFill}
-    />
+    <LinearGradient colors={['#394242', '#26394C']} style={StyleSheet.absoluteFill} />
     <ActivityIndicator size="large" color="#ffffff" />
   </View>
 );
@@ -40,9 +37,9 @@ const AppContent = () => {
   if (isLoading) {
     return <LoadingScreen />;
   }
-  
+
   return <AppNavigator />;
-}
+};
 
 export default function App() {
   return (
@@ -57,14 +54,6 @@ export default function App() {
   );
 }
 
-
-
-
-
-
-
-
-
 // import React, { useEffect, useState } from 'react';
 // import { View, Text, StyleSheet, SafeAreaView, Button } from 'react-native';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -76,7 +65,7 @@ export default function App() {
 //   const runTest = async () => {
 //     try {
 //       console.log('--- RUNNING ASYNCSTORAGE TEST ---');
-      
+
 //       // 1. Try to write a value
 //       await AsyncStorage.setItem('debug_key', 'it_works!');
 //       console.log('setItem successful.');
@@ -96,7 +85,7 @@ export default function App() {
 //       }
 //     }
 //   };
-  
+
 //   const readOnDemand = async () => {
 //     const value = await AsyncStorage.getItem('debug_key');
 //     setReadResult(value);
@@ -112,13 +101,13 @@ export default function App() {
 //       <Text style={styles.header}>AsyncStorage Debug Test</Text>
 //       <Text style={styles.text}>Initial Test Result:</Text>
 //       <Text style={styles.result}>{testResult}</Text>
-      
+
 //       <View style={styles.divider} />
-      
+
 //       <Button title="Attempt to Read Value Again" onPress={readOnDemand} />
 //       <Text style={styles.text}>Value read on demand:</Text>
 //       <Text style={styles.result}>{String(readResult)}</Text>
-      
+
 //       <Text style={styles.instructions}>
 //         Close the app completely (swipe away) and reopen it. Then press the button again. If the value is 'null', storage is not persisting.
 //       </Text>
@@ -166,10 +155,6 @@ export default function App() {
 // });
 
 // export default App;
-
-
-
-
 
 // import React, { useEffect, useState } from 'react';
 // import { View, ActivityIndicator, StyleSheet } from 'react-native';
@@ -229,9 +214,3 @@ export default function App() {
 //     </UserProvider>
 //   );
 // }
-
-
-
-
-
-

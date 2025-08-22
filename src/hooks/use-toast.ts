@@ -10,7 +10,6 @@ interface ToastProps {
 
 export const useToast = () => {
   const toast = ({ variant = 'default', title, description }: ToastProps) => {
-    
     const type = variant === 'destructive' ? 'error' : 'success';
 
     Toast.show({

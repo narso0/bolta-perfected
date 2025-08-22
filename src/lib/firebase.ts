@@ -1,15 +1,15 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, User } from 'firebase/auth'; 
+import { getAuth, User } from 'firebase/auth';
 import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
-  authDomain: "boltaaa.firebaseapp.com",
-  projectId: "boltaaa",
-  storageBucket: "boltaaa.firebasestorage.app",
-  messagingSenderId: "196578511481",
-  appId: "1:196578511481:web:b7c12c2462db05563f62a8",
-  measurementId: "G-R7LWXHJ5ZE"
+  authDomain: 'boltaaa.firebaseapp.com',
+  projectId: 'boltaaa',
+  storageBucket: 'boltaaa.firebasestorage.app',
+  messagingSenderId: '196578511481',
+  appId: '1:196578511481:web:b7c12c2462db05563f62a8',
+  measurementId: 'G-R7LWXHJ5ZE',
 };
 
 const app = initializeApp(firebaseConfig);
@@ -19,7 +19,7 @@ const db = getFirestore(app);
 // The 'user' type is now more specific to handle both Auth and custom data
 export const createUserDocument = async (user: User & { displayName?: string | null }) => {
   if (!user) return;
-  const userRef = doc(db, "users", user.uid); 
+  const userRef = doc(db, 'users', user.uid);
   const snapshot = await getDoc(userRef);
 
   if (!snapshot.exists()) {
@@ -36,37 +36,39 @@ export const createUserDocument = async (user: User & { displayName?: string | n
         coinsSpent: 0,
       });
     } catch (error) {
-      console.error("Error creating user document: ", error);
+      console.error('Error creating user document: ', error);
     }
   }
   return userRef;
 };
 
-export const updateUserStats = async (uid: string, stats: { totalSteps: number; coins: number }) => {
-    if (!uid) return;
-    try {
-        const userRef = doc(db, "users", uid);
-        await updateDoc(userRef, {
-            totalSteps: stats.totalSteps,
-            coins: stats.coins,
-            lastUpdated: serverTimestamp(),
-        });
-    } catch (error) {
-        console.error("Error updating user stats:", error);
-    }
+export const updateUserStats = async (
+  uid: string,
+  stats: { totalSteps: number; coins: number },
+) => {
+  if (!uid) return;
+  try {
+    const userRef = doc(db, 'users', uid);
+    await updateDoc(userRef, {
+      totalSteps: stats.totalSteps,
+      coins: stats.coins,
+      lastUpdated: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error('Error updating user stats:', error);
+  }
 };
 
 export const getUserDocument = async (uid: string) => {
   if (!uid) return null;
   try {
-    const userRef = doc(db, "users", uid);
+    const userRef = doc(db, 'users', uid);
     const snapshot = await getDoc(userRef);
     return snapshot.exists() ? snapshot.data() : null;
   } catch (error) {
-    console.error("Error fetching user document: ", error);
+    console.error('Error fetching user document: ', error);
     return null;
   }
 };
 
 export { auth, db };
-

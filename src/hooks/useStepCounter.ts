@@ -38,7 +38,7 @@ export const useStepCounter = () => {
           subscription = Pedometer.watchStepCount(async (result) => {
             const newStepCount = result.steps;
             setStepCount(newStepCount);
-            
+
             try {
               await AsyncStorage.setItem(STEPS_STORAGE_KEY, JSON.stringify(newStepCount));
             } catch (e) {
@@ -46,11 +46,11 @@ export const useStepCounter = () => {
             }
 
             if (user) {
-                const coins = Math.floor(newStepCount / 1000);
-                const uid = auth.currentUser?.uid;
-                if (uid) {
-                    updateUserStats(uid, { totalSteps: newStepCount, coins: coins });
-                }
+              const coins = Math.floor(newStepCount / 1000);
+              const uid = auth.currentUser?.uid;
+              if (uid) {
+                updateUserStats(uid, { totalSteps: newStepCount, coins: coins });
+              }
             }
           });
         }
@@ -61,6 +61,6 @@ export const useStepCounter = () => {
       subscription?.remove();
     };
   }, [user]);
-  
+
   return { stepCount, isPedometerAvailable };
 };

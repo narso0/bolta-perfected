@@ -17,7 +17,6 @@ const Stack = createNativeStackNavigator();
 export function AppNavigator() {
   return (
     <Stack.Navigator initialRouteName="Intro">
-
       {/* Group 1: Screens with NO header */}
       <Stack.Group screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Intro" component={IntroScreen} />
@@ -38,17 +37,16 @@ export function AppNavigator() {
 
       {/* Group 3: Screens that are modals with a default header */}
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen 
-          name="Profile" 
-          component={ProfileScreen} 
-          options={{ 
+        <Stack.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{
             headerStyle: { backgroundColor: '#26394C' },
             headerTitleStyle: { color: 'white' },
             headerTintColor: 'white',
-          }} 
+          }}
         />
       </Stack.Group>
-
     </Stack.Navigator>
   );
 }
