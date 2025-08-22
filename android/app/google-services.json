@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "196578511481",
+    "project_id": "boltaaa",
+    "storage_bucket": "boltaaa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196578511481:android:f4e3dcde2fe980ec3f62a8",
+        "android_client_info": {
+          "package_name": "com.narsoo.boltaaa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "196578511481-qdmnbjuu6b2p4qhvl6n8rb7v926ppsed.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.narsoo.boltaaa",
+            "certificate_hash": "cfbb2485080e93e4291d62d4c6f63545487759fe"
+          }
+        },
+        {
+          "client_id": "196578511481-82ge9qj9utuci5kkddde4gppeo0r4g30.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFoZJQpRI1kwV-CkqATTNo3jfKpdRsAno"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "196578511481-82ge9qj9utuci5kkddde4gppeo0r4g30.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "196578511481-1pkki5127qp78dul4siql29ao9gcn0aq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.narsoo.boltaa"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

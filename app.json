@@ -3,11 +3,27 @@
     "name": "boltaaa",
     "slug": "boltaaa",
     "version": "1.0.0",
+    "scheme": "exp+boltaaa",
     "ios": {
-      "bundleIdentifier": "com.narsoo.boltaa"
+      "bundleIdentifier": "com.narsoo.boltaaa"
     },
     "android": {
-      "package": "com.narsoo.boltaa"
+      "package": "com.narsoo.boltaaa",
+      "permissions": ["ACTIVITY_RECOGNITION"],
+      "googleServicesFile": "./google-services.json"
+    },
+    "splash": {
+      "image": "./assets/images/bolta-circle.png", 
+      "resizeMode": "contain", 
+      "backgroundColor": "#515773" 
+    },
+    "plugins": [
+      "@react-native-google-signin/google-signin"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "6885d58b-7929-4f67-a236-62d42ebb1fca"
+      }
     }
   }
 }
