@@ -13,13 +13,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Mail, Lock, Eye, EyeOff, ChevronLeft, User as UserIcon } from 'lucide-react-native';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth, createUserDocument } from '@/lib/firebase';
-import { useUser } from '@/context/UserContext';
-import { CommonActions } from '@react-navigation/native';
+import { signUpWithEmail } from '../../services/authService';
+import { createUserProfile } from '../../services/userService';
 
 export default function SignUpScreen({ navigation }: any) {
-  const { login } = useUser();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
@@ -57,21 +54,9 @@ export default function SignUpScreen({ navigation }: any) {
   const handleSignUp = async () => {
     if (validate()) {
       try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const { user } = userCredential;
-
-        // This is a custom property we add before saving to the database
-        const userWithDisplayName = { ...user, displayName: name };
-        await createUserDocument(userWithDisplayName);
-
-        login({ name: name, email: user.email });
-
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: 'Home' }],
-          }),
-        );
+        const user = await signUpWithEmail(email, password, name);
+        await createUserProfile(user.uid, name, user.email ?? null, 10000);
+        // SessionProvider will navigate based on auth state
       } catch (error: any) {
         console.error('Sign up error:', error);
         if (error.code === 'auth/email-already-in-use') {

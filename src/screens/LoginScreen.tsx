@@ -14,16 +14,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Mail, Lock, Eye, EyeOff, ChevronLeft } from 'lucide-react-native';
-import {
-  GoogleAuthProvider,
-  signInWithCredential,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
+import { GoogleAuthProvider, signInWithCredential } from 'firebase/auth';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
-import { auth, createUserDocument, getUserDocument } from '@/lib/firebase';
-import { useUser, User } from '@/context/UserContext';
-import { CommonActions } from '@react-navigation/native';
+import { auth } from '../../config/firebase';
+import { signInWithEmail } from '../../services/authService';
+import { createUserProfile } from '../../services/userService';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -32,7 +28,6 @@ const GoogleIcon = () => (
 );
 
 export default function LoginScreen({ navigation }: any) {
-  const { login } = useUser();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -51,14 +46,8 @@ export default function LoginScreen({ navigation }: any) {
       signInWithCredential(auth, credential)
         .then(async (userCredential) => {
           const user = userCredential.user;
-          await createUserDocument(user);
-          const userProfile = await getUserDocument(user.uid);
-          if (userProfile) {
-            login(userProfile as User);
-            navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'Home' }] }));
-          } else {
-            throw new Error('Could not find or create user profile.');
-          }
+          // Ensure a profile exists for Google users; SessionProvider will pick it up
+          await createUserProfile(user.uid, user.displayName ?? null, user.email ?? null, 10000);
         })
         .catch((error) => {
           console.error('Firebase Google Auth Error:', error);
@@ -86,19 +75,8 @@ export default function LoginScreen({ navigation }: any) {
   const handleSignIn = async () => {
     if (validate()) {
       try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const userProfile = await getUserDocument(userCredential.user.uid);
-        if (userProfile) {
-          login(userProfile as User);
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: 'Home' }],
-            }),
-          );
-        } else {
-          throw new Error('User profile not found in database.');
-        }
+        await signInWithEmail(email, password);
+        // SessionProvider will handle navigation based on auth state
       } catch (error: any) {
         console.error('Sign in error:', error);
         Alert.alert('Sign In Failed', 'Please check your email and password and try again.');

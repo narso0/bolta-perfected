@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Edit, Calendar, Footprints, Coins, Trophy, Zap, Mountain } from 'lucide-react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { useUser } from '../context/UserContext';
+import { useSession } from '../../providers/SessionProvider';
 
 const getInitials = (name: string | null | undefined): string => {
   if (!name) return '';
@@ -27,10 +27,10 @@ const achievements = [
 
 export default function ProfileScreen({ navigation }: any) {
   const insets = useSafeAreaInsets();
-  const { user, logout } = useUser();
+  const { user, signOutAsync } = useSession();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await signOutAsync();
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
@@ -44,18 +44,17 @@ export default function ProfileScreen({ navigation }: any) {
   }
 
   const joinDate = user.createdAt
-    ? new Date(user.createdAt.seconds * 1000).toLocaleDateString('en-US', {
+    ? new Date((user.createdAt as any).seconds * 1000).toLocaleDateString('en-US', {
         month: 'long',
         year: 'numeric',
       })
     : 'Unknown';
 
   const stats = [
-    { value: (user.totalSteps || 0).toLocaleString(), label: 'ჯამური ნაბიჯი', icon: Footprints },
-    { value: (user.coins || 0).toLocaleString(), label: 'დაგროვებული ქოინები', icon: Coins },
-    { value: (user.coinsSpent || 0).toLocaleString(), label: 'დახარჯული ქოინები', icon: Zap },
+    { value: (user.steps || 0).toLocaleString(), label: 'ჯამური ნაბიჯი', icon: Footprints },
+    { value: (user.bolts || 0).toLocaleString(), label: 'დაგროვებული ქოინები', icon: Coins },
     {
-      value: `${((user.totalSteps || 0) * 0.000762).toFixed(2)} km`,
+      value: `${((user.steps || 0) * 0.000762).toFixed(2)} km`,
       label: 'გავლილი მანძილი',
       icon: Mountain,
     },
@@ -75,11 +74,11 @@ export default function ProfileScreen({ navigation }: any) {
           <View className="flex-row items-center space-x-4">
             <Avatar className="h-16 w-16">
               <AvatarFallback className="bg-logo-background">
-                <Text className="text-xl text-white">{getInitials(user.name)}</Text>
+                <Text className="text-xl text-white">{getInitials(user.username)}</Text>
               </AvatarFallback>
             </Avatar>
             <View>
-              <Text className="text-2xl font-bold text-white">{user.name}</Text>
+              <Text className="text-2xl font-bold text-white">{user.username}</Text>
               <Text className="text-gray-400">{user.email}</Text>
               <View className="flex-row items-center mt-1 space-x-1">
                 <Calendar className="h-3 w-3 text-gray-400" />

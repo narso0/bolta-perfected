@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Pedometer } from 'expo-sensors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useUser } from '../context/UserContext';
-import { updateUserStats } from '../lib/firebase';
-import { auth } from '../lib/firebase'; // <-- THIS IS THE FIX
+import { useSession } from '../../providers/SessionProvider';
 
 const STEPS_STORAGE_KEY = 'bolta_daily_step_count';
 
 export const useStepCounter = () => {
-  const { user } = useUser();
+  const { user } = useSession();
   const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
   const [stepCount, setStepCount] = useState(0);
 
@@ -45,13 +43,7 @@ export const useStepCounter = () => {
               console.error('Failed to save steps to storage', e);
             }
 
-            if (user) {
-              const coins = Math.floor(newStepCount / 1000);
-              const uid = auth.currentUser?.uid;
-              if (uid) {
-                updateUserStats(uid, { totalSteps: newStepCount, coins: coins });
-              }
-            }
+            // Future: push to Firestore via a dedicated service method
           });
         }
       }

@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useUser } from '../context/UserContext';
+import { useSession } from '../../providers/SessionProvider';
 import { useStepCounter } from '../hooks/useStepCounter';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CircularProgress } from '@/components/ui/CircularProgress';
@@ -44,13 +44,21 @@ const generateWeekData = (todaySteps: number) => {
 };
 
 export default function HomeScreen({ navigation }: any) {
-  const { user } = useUser();
+  const { user, isLoading } = useSession();
   const { stepCount } = useStepCounter();
   const coins = Math.floor(stepCount / 1000);
   const progressPercent = Math.min((stepCount / dailyGoal) * 100, 100);
 
   const weekData = generateWeekData(stepCount);
   const streak = calculateStreak(weekData);
+
+  if (isLoading || !user) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -60,7 +68,7 @@ export default function HomeScreen({ navigation }: any) {
           contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 128, paddingBottom: 32 }}
         >
           <View className="mb-6">
-            <Text className="text-3xl font-bold text-white">გამარჯობა, {user?.name}! 👋</Text>
+            <Text className="text-3xl font-bold text-white">გამარჯობა, {user?.username}! 👋</Text>
             <Text className="text-gray-400">განაგრძე სიარული შენი მიზნებისკენ</Text>
           </View>
 
