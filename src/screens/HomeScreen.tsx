@@ -10,47 +10,12 @@ import LinearGradient from 'react-native-linear-gradient';
 
 const dailyGoal = 10000;
 
-const calculateStreak = (weekData: { day: string; steps: number }[]): number => {
-  let streak = 0;
-  const todayIndex = weekData.length - 1;
-  const startIndex = weekData[todayIndex].steps >= dailyGoal ? todayIndex : todayIndex - 1;
-
-  for (let i = startIndex; i >= 0; i--) {
-    if (weekData[i].steps >= dailyGoal) {
-      streak++;
-    } else {
-      break;
-    }
-  }
-  return streak;
-};
-
-const generateWeekData = (todaySteps: number) => {
-  const days = ['ორშ', 'სამ', 'ოთხ', 'ხუთ', 'პარ', 'შაბ', 'კვი'];
-  const today = new Date().getDay();
-  const todayIndex = today === 0 ? 6 : today - 1;
-
-  return days.map((day, index) => {
-    if (index === todayIndex) {
-      return { day, steps: todaySteps };
-    }
-    if (index > todayIndex) {
-      return { day, steps: 0 };
-    }
-    // For past days, we'll use consistent mock data. In a real app, this would come from a database.
-    const pastSteps = [11200, 10500, 15600, 8450, 2300, 4500];
-    return { day, steps: pastSteps[index] || 0 };
-  });
-};
-
 export default function HomeScreen({ navigation }: any) {
   const { user, isLoading } = useSession();
   const { stepCount } = useStepCounter();
   const coins = Math.floor(stepCount / 1000);
   const progressPercent = Math.min((stepCount / dailyGoal) * 100, 100);
-
-  const weekData = generateWeekData(stepCount);
-  const streak = calculateStreak(weekData);
+  const weekData: { day: string; steps: number }[] = [];
 
   if (isLoading || !user) {
     return (
@@ -82,15 +47,6 @@ export default function HomeScreen({ navigation }: any) {
                 </View>
               </CardContent>
             </Card>
-            <Card className="flex-1 bg-green-500 border-0">
-              <CardContent className="p-4">
-                <Text className="text-green-900">სტრიკი</Text>
-                <View className="flex-row items-center justify-between">
-                  <Text className="text-3xl font-bold text-green-900">{streak} დღე</Text>
-                  <Flame className="h-8 w-8 text-green-900 opacity-50" />
-                </View>
-              </CardContent>
-            </Card>
           </View>
 
           <Card className="mb-6 bg-login-card border-0 items-center p-6 rounded-2xl">
@@ -104,18 +60,10 @@ export default function HomeScreen({ navigation }: any) {
             <CardHeader className="mb-4">
               <CardTitle className="text-white">ამ კვირის აქტივობა</CardTitle>
             </CardHeader>
-            <CardContent className="flex-row justify-between items-end h-32 px-2">
-              {weekData.map((dayData) => (
-                <View key={dayData.day} className="flex-1 items-center space-y-2 px-1">
-                  <View className="w-full h-full bg-input-background rounded-md overflow-hidden justify-end">
-                    <View
-                      className="bg-green-500"
-                      style={{ height: `${Math.min(dayData.steps / dailyGoal, 1) * 100}%` }}
-                    />
-                  </View>
-                  <Text className="text-xs text-gray-400">{dayData.day}</Text>
-                </View>
-              ))}
+            <CardContent className="flex-row justify-center items-center h-32 px-2">
+              {weekData.length === 0 ? (
+                <Text className="text-gray-400">No activity yet</Text>
+              ) : null}
             </CardContent>
           </Card>
         </ScrollView>
