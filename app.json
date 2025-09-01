@@ -9,6 +9,7 @@
     },
     "android": {
       "package": "com.narsoo.boltaaa",
+      "versionCode": 50,
       "permissions": ["ACTIVITY_RECOGNITION"],
       "googleServicesFile": "./google-services.json"
     },
