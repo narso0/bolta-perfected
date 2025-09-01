@@ -12,10 +12,21 @@ const dailyGoal = 10000;
 
 export default function HomeScreen({ navigation }: any) {
   const { user, isLoading } = useSession();
-  const { stepCount } = useStepCounter();
+  const { stepCount, fetchWeeklyActivity } = useStepCounter();
+  const [weekly, setWeekly] = React.useState<number[]>([]);
+  React.useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const data = await fetchWeeklyActivity();
+      if (mounted) setWeekly(data);
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
   const coins = Math.floor(stepCount / 1000);
   const progressPercent = Math.min((stepCount / dailyGoal) * 100, 100);
-  const weekData: { day: string; steps: number }[] = [];
+  const days = ['ორშ', 'სამ', 'ოთხ', 'ხუთ', 'პარ', 'შაბ', 'კვი'];
 
   if (isLoading || !user) {
     return (
@@ -60,10 +71,20 @@ export default function HomeScreen({ navigation }: any) {
             <CardHeader className="mb-4">
               <CardTitle className="text-white">ამ კვირის აქტივობა</CardTitle>
             </CardHeader>
-            <CardContent className="flex-row justify-center items-center h-32 px-2">
-              {weekData.length === 0 ? (
-                <Text className="text-gray-400">No activity yet</Text>
-              ) : null}
+            <CardContent className="flex-row items-end justify-between h-32 px-2">
+              {days.map((day, idx) => {
+                const value = weekly[idx] ?? 0;
+                const pct = Math.max(0, Math.min(1, value / 100000));
+                const heightPct = `${pct * 100}%`;
+                return (
+                  <View key={day} className="flex-1 items-center space-y-2 px-1">
+                    <View className="w-full h-full bg-input-background rounded-md overflow-hidden justify-end">
+                      <View className="bg-green-500" style={{ height: heightPct }} />
+                    </View>
+                    <Text className="text-xs text-gray-400">{day}</Text>
+                  </View>
+                );
+              })}
             </CardContent>
           </Card>
         </ScrollView>
