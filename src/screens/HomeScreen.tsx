@@ -13,22 +13,7 @@ const dailyGoal = 10000;
 
 export default function HomeScreen({ navigation: _navigation }: any) {
   const { user, isLoading, steps } = useSession();
-  const { fetchWeeklyActivity } = useStepCounter();
-  const [weekly, setWeekly] = React.useState<number[]>([]);
-  React.useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const data = await fetchWeeklyActivity();
-        if (mounted) setWeekly(data);
-      } catch (e) {
-        console.debug('weekly fetch failed', e);
-      }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, [fetchWeeklyActivity]);
+  useStepCounter();
   const coins = Math.floor(steps / 1000);
   const progressPercent = Math.min((steps / dailyGoal) * 100, 100);
   const weekData: { day: string; steps: number }[] = [];
@@ -77,7 +62,7 @@ export default function HomeScreen({ navigation: _navigation }: any) {
               <CardTitle className="text-white">ამ კვირის აქტივობა</CardTitle>
             </CardHeader>
             <CardContent>
-              <WeeklyActivityGraph data={weekly} goal={user.dailyStepGoal} />
+              <WeeklyActivityGraph />
             </CardContent>
           </Card>
         </ScrollView>

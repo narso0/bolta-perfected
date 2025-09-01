@@ -1,17 +1,11 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { auth } from '../config/firebase';
+import { auth, db as _db } from '../config/firebase';
 import { getUserProfile, UserProfile } from '../services/userService';
 
 type SessionContextValue = {
   user: UserProfile | null;
   isLoading: boolean;
-  steps: number;
-  setSteps: React.Dispatch<React.SetStateAction<number>>;
-  permissionStatus: string;
-  setPermissionStatus: React.Dispatch<React.SetStateAction<string>>;
-  // convenience alias for code that expects userProfile
-  userProfile?: UserProfile | null;
   signOutAsync: () => Promise<void>;
 };
 
@@ -20,8 +14,6 @@ const SessionContext = createContext<SessionContextValue | undefined>(undefined)
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [steps, setSteps] = useState<number>(0);
-  const [permissionStatus, setPermissionStatus] = useState<string>('unknown');
   const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMountedRef = useRef(true);
 
@@ -42,7 +34,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             if (profile) {
               if (isMountedRef.current) {
                 setUser(profile);
-                setSteps(profile.steps || 0);
                 setIsLoading(false);
               }
               return;
@@ -62,7 +53,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         tryFetch();
       } else {
         setUser(null);
-        setSteps(0);
         setIsLoading(false);
       }
     });
@@ -80,7 +70,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     await signOut(auth);
     if (isMountedRef.current) {
       setUser(null);
-      setSteps(0);
     }
   };
 
@@ -88,14 +77,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     () => ({
       user,
       isLoading,
-      steps,
-      setSteps,
-      permissionStatus,
-      setPermissionStatus,
-      userProfile: user,
       signOutAsync,
     }),
-    [user, isLoading, steps, permissionStatus],
+    [user, isLoading],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

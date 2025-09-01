@@ -1,41 +1,58 @@
-import { useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Pedometer } from 'expo-sensors';
-import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../config/firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSession } from '../../providers/SessionProvider';
 
-export const useStepCounter = () => {
-  const { user, userProfile, setSteps, permissionStatus, setPermissionStatus } = useSession();
+const STEPS_STORAGE_KEY = 'bolta_daily_step_count';
 
-  const handleStepCountUpdate = useCallback(
-    async (newStepCount: number) => {
-      if (user && (userProfile ?? user)) {
-        setSteps(newStepCount);
-        const userDocRef = doc(db, 'users', user.uid);
-        await updateDoc(userDocRef, { steps: newStepCount });
-      }
-    },
-    [user, userProfile, setSteps],
-  );
+export const useStepCounter = () => {
+  const { user } = useSession();
+  const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
+  const [stepCount, setStepCount] = useState(0);
 
   useEffect(() => {
-    let subscription: Pedometer.Subscription | undefined;
+    const loadSavedSteps = async () => {
+      try {
+        const savedStepsString = await AsyncStorage.getItem(STEPS_STORAGE_KEY);
+        if (savedStepsString !== null) {
+          setStepCount(JSON.parse(savedStepsString));
+        }
+      } catch (e) {
+        console.error('Failed to load steps from storage', e);
+      }
+    };
+    loadSavedSteps();
+  }, []);
+
+  useEffect(() => {
+    let subscription: Pedometer.Subscription | null = null;
     const subscribe = async () => {
-      if (permissionStatus === 'granted') {
-        subscription = Pedometer.watchStepCount((result) => {
-          handleStepCountUpdate(result.steps);
-        });
+      const isAvailable = await Pedometer.isAvailableAsync();
+      setIsPedometerAvailable(String(isAvailable));
+
+      if (isAvailable) {
+        const permission = await Pedometer.requestPermissionsAsync();
+        if (permission.granted) {
+          subscription = Pedometer.watchStepCount(async (result) => {
+            const newStepCount = result.steps;
+            setStepCount(newStepCount);
+
+            try {
+              await AsyncStorage.setItem(STEPS_STORAGE_KEY, JSON.stringify(newStepCount));
+            } catch (e) {
+              console.error('Failed to save steps to storage', e);
+            }
+
+            // Future: push to Firestore via a dedicated service method
+          });
+        }
       }
     };
     subscribe();
-    return () => subscription?.remove();
-  }, [permissionStatus, handleStepCountUpdate]);
+    return () => {
+      subscription?.remove();
+    };
+  }, [user]);
 
-  const requestPermissions = async () => {
-    const { status } = await Pedometer.requestPermissionsAsync();
-    setPermissionStatus(status);
-    return status === 'granted';
-  };
-
-  return { requestPermissions };
+  return { stepCount, isPedometerAvailable };
 };
