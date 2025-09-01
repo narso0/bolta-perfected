@@ -10,7 +10,9 @@
     "android": {
       "package": "com.narsoo.boltaaa",
       "versionCode": 50,
-      "permissions": ["ACTIVITY_RECOGNITION"],
+      "permissions": [
+        "ACTIVITY_RECOGNITION"
+      ],
       "googleServicesFile": "./google-services.json"
     },
     "splash": {
@@ -18,11 +20,14 @@
       "resizeMode": "contain",
       "backgroundColor": "#515773"
     },
-    "plugins": ["@react-native-google-signin/google-signin"],
+    "plugins": [
+      "@react-native-google-signin/google-signin"
+    ],
     "extra": {
       "eas": {
-        "projectId": "6885d58b-7929-4f67-a236-62d42ebb1fca"
+        "projectId": "44e59538-0cc6-4224-b44f-c4af8140c60b"
       }
-    }
+    },
+    "owner": "narsooo"
   }
 }
