@@ -5,17 +5,16 @@ import { useSession } from '../../providers/SessionProvider';
 import { useStepCounter } from '../hooks/useStepCounter';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CircularProgress } from '@/components/ui/CircularProgress';
-import { Coins } from 'lucide-react-native';
+import { Coins, Flame } from 'lucide-react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import WeeklyActivityGraph from '../components/WeeklyActivityGraph';
 
 const dailyGoal = 10000;
 
-export default function HomeScreen({ navigation: _navigation }: any) {
-  const { user, isLoading, steps } = useSession();
-  useStepCounter();
-  const coins = Math.floor(steps / 1000);
-  const progressPercent = Math.min((steps / dailyGoal) * 100, 100);
+export default function HomeScreen({ navigation }: any) {
+  const { user, isLoading } = useSession();
+  const { stepCount } = useStepCounter();
+  const coins = Math.floor(stepCount / 1000);
+  const progressPercent = Math.min((stepCount / dailyGoal) * 100, 100);
   const weekData: { day: string; steps: number }[] = [];
 
   if (isLoading || !user) {
@@ -34,7 +33,7 @@ export default function HomeScreen({ navigation: _navigation }: any) {
           contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 128, paddingBottom: 32 }}
         >
           <View className="mb-6">
-            <Text style={styles.welcomeText}>გამარჯობა, {user?.username}!</Text>
+            <Text className="text-3xl font-bold text-white">გამარჯობა, {user?.username}! 👋</Text>
             <Text className="text-gray-400">განაგრძე სიარული შენი მიზნებისკენ</Text>
           </View>
 
@@ -52,7 +51,7 @@ export default function HomeScreen({ navigation: _navigation }: any) {
 
           <Card className="mb-6 bg-login-card border-0 items-center p-6 rounded-2xl">
             <CircularProgress size={180} strokeWidth={15} progressPercent={progressPercent}>
-              <Text className="text-4xl font-bold text-white">{steps.toLocaleString()}</Text>
+              <Text className="text-4xl font-bold text-white">{stepCount.toLocaleString()}</Text>
               <Text className="text-sm text-gray-400">ნაბიჯი</Text>
             </CircularProgress>
           </Card>
@@ -61,8 +60,10 @@ export default function HomeScreen({ navigation: _navigation }: any) {
             <CardHeader className="mb-4">
               <CardTitle className="text-white">ამ კვირის აქტივობა</CardTitle>
             </CardHeader>
-            <CardContent>
-              <WeeklyActivityGraph />
+            <CardContent className="flex-row justify-center items-center h-32 px-2">
+              {weekData.length === 0 ? (
+                <Text className="text-gray-400">No activity yet</Text>
+              ) : null}
             </CardContent>
           </Card>
         </ScrollView>
@@ -70,10 +71,3 @@ export default function HomeScreen({ navigation: _navigation }: any) {
     </View>
   );
 }
-const styles = StyleSheet.create({
-  welcomeText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-});
